@@ -43,7 +43,9 @@ class DQNAgent:
         if len(possible_actions) == 0:
             return None
         state = np.array([to_categorical(state, num_classes=1296)])
-        return np.argmax(self.model.predict(state))
+        q_values = self.model.predict(state, verbose=0)[0]
+        legal_q_values = {action: q_values[action] for action in possible_actions}
+        return max(legal_q_values, key=legal_q_values.get)
 
     def lower_epsilon(self):
         new_epsilon = self.epsilon * self.epsilon_decay
@@ -60,11 +62,11 @@ class DQNAgent:
         for info_set in info_sets:
             state, action, reward, next_state, done = info_set
             states_list.append(state.flatten())
-            target = self.model.predict(state)
+            target = self.model.predict(state, verbose=0)
             if done:
                 target[0][action] = reward
             else:
-                Q_future = max(self.model.predict(next_state)[0])
+                Q_future = max(self.model.predict(next_state, verbose=0)[0])
                 target[0][action] = reward + Q_future * self.gamma
             targets_list.append(target.flatten())
 

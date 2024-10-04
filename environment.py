@@ -2,14 +2,20 @@ import pygame
 import random
 import copy
 import numpy as np
-from agent import *
 import tensorflow as tf
-
 
 LEFT = 0
 DOWN = 1
 RIGHT = 2
 UP = 3
+
+board = ["*   g",
+         " www ",
+         " w*  ",
+         " www ",
+         "p    "]
+
+clock = pygame.time.Clock()
 
 class Pacman:
     def __init__(self, board):
@@ -287,53 +293,3 @@ class Pacman:
 
     def turn_on_display(self):
         self.display_mode_on = True
-
-board = ["*   g",
-         " www ",
-         " w*  ",
-         " www ",
-         "p    "]
-
-clock = pygame.time.Clock()
-
-pacman = Pacman(board)
-
-pacman.reset()
-
-state_size = pacman.get_number_of_states()
-action_size = 4
-learning_rate = 0.001
-
-# model = Sequential()
-# model.add(Dense(state_size, input_dim=state_size, activation="relu"))
-# model.add(Dense(128, activation="relu"))
-# model.add(Dense(64, activation="relu"))
-# model.add(Dense(32, activation="relu"))
-# model.add(Dense(action_size))  # wyjście
-# model.compile(loss="mean_squared_error",
-#               optimizer=Adam(learning_rate=learning_rate))
-
-model = tf.keras.models.load_model('my_model.h5')
-
-agent = DQNAgent(action_size, learning_rate, model, get_legal_actions=pacman.get_possible_actions)
-
-done = False
-batch_size = 64
-EPISODES = 10
-counter = 0
-agent.epsilon=0.0
-total_reward = 0.0
-state = pacman.reset()
-done = False
-print("Game begins...")
-while not done:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-    action = agent.get_action(state)
-    next_state_env, reward, done, _ = pacman.step(action)
-    total_reward += reward
-    state = next_state_env
-
-    print(f'Score = {total_reward}')
-    clock.tick(1)
