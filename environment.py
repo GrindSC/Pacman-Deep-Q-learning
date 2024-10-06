@@ -21,6 +21,9 @@ class Pacman:
     def __init__(self, board):
         self.player_image = pygame.transform.scale(pygame.image.load("assets/pacman.png"), (30, 30))
         self.ghost_image = pygame.transform.scale(pygame.image.load("assets/red_ghost.png"), (30, 30))
+        self.ghost_up_image = pygame.transform.scale(pygame.image.load("assets/ghost_up.png"), (30, 30))
+        self.ghost_down_image = pygame.transform.scale(pygame.image.load("assets/ghost_down.png"), (30, 30))
+
         self.display_mode_on = True
         self.board = board
         self.cell_size = 60
@@ -30,6 +33,8 @@ class Pacman:
         self.ghosts = []
         self.foods = []
         self.score = 0
+        self.player_direction = RIGHT
+
         for y in range(len(self.board)):
             for x in range(len(self.board[0])):
                 if self.board[y][x] == 'p':
@@ -158,6 +163,9 @@ class Pacman:
         width = len(self.board[0])
         height = len(self.board)
 
+        if action in [LEFT, RIGHT, UP, DOWN]:
+            self.player_direction = action
+
         if action == LEFT and self.player_pos['x'] > 0:
             if self.board[self.player_pos['y']][self.player_pos['x'] - 1] != 'w':
                 self.player_pos['x'] -= 1
@@ -263,18 +271,38 @@ class Pacman:
                 x = 0
                 for obj in line:
                     if obj == 'w':
-                        color = (0, 255, 255)
+                        color = (0, 0, 255)
                         pygame.draw.rect(self.screen, color, pygame.Rect(x, y, 60, 60))
                     x += 60
                 y += 60
 
             color = (255, 255, 0)
-            self.screen.blit(self.player_image, (self.player_pos['x'] * self.cell_size + 15, self.player_pos['y'] * self.cell_size + 15))
+
+            # Rotating Pacman
+            rotated_player_image = self.player_image
+            if self.player_direction == LEFT:
+                rotated_player_image = pygame.transform.flip(self.player_image, True, False)
+            elif self.player_direction == UP:
+                rotated_player_image = pygame.transform.rotate(self.player_image, 90)
+            elif self.player_direction == DOWN:
+                rotated_player_image = pygame.transform.rotate(self.player_image, -90)
+                
+            self.screen.blit(rotated_player_image,
+                             (self.player_pos['x'] * self.cell_size + 15, self.player_pos['y'] * self.cell_size + 15))
 
             color = (255, 0, 0)
             for ghost in self.ghosts:
-                self.screen.blit(self.ghost_image,
-                                 (ghost['x'] * self.cell_size + 15, ghost['y'] * self.cell_size + 15))
+                    if ghost['direction'] == LEFT:
+                        ghost_image = pygame.transform.flip(self.ghost_image, True, False)
+                    elif ghost['direction'] == RIGHT:
+                        ghost_image = self.ghost_image
+                    elif ghost['direction'] == UP:
+                        ghost_image = self.ghost_up_image
+                    elif ghost['direction'] == DOWN:
+                        ghost_image = self.ghost_down_image
+
+                    self.screen.blit(ghost_image,
+                                    (ghost['x'] * self.cell_size + 15, ghost['y'] * self.cell_size + 15))
 
             color = (255, 255, 255)
 
