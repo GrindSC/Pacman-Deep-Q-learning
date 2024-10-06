@@ -76,7 +76,7 @@ This will load the trained DQN model and start the Pacman game. The AI agent wil
 
 Below is a comparison of the Pacman AI before and after training using Deep Q-Learning.
 
-|             Pacman Without Training              |            Pacman After Training             |
+|             Initial Pacman Behavior              |                Trained Pacman                |
 | :----------------------------------------------: | :------------------------------------------: |
 | ![Pacman Untrained](assets/pacman_untrained.gif) | ![Pacman Trained](assets/pacman_trained.gif) |
 
