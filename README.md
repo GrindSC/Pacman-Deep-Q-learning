@@ -53,8 +53,8 @@ pip install tensorflow pygame numpy
 1. Clone the repository:
 
 ```
-git clone https://github.com/YourUsername/pacman-dqn.git
-cd pacman-dqn
+git clone https://github.com/GrindSC/Pacman-Deep-Q-learning
+cd Pacman-Deep-Q-learning
 ```
 
 2. Train the model (optional):
